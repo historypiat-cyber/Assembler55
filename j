@@ -1,4 +1,3 @@
-
 Extern printf, scanf
 
 section .data
@@ -26,4 +25,44 @@ main:
 
     mov rdi, fmt_in
     lea rsi, [a]
-    xor rax
+    xor rax, rax
+    call scanf
+
+    mov rdi, msg_x
+    xor rax, rax
+    call printf
+
+    xor r12, r12
+
+.loop:
+    mov rdi, fmt_in
+    lea rsi, [temp]
+    xor rax, rax
+    call scanf
+    
+    cmp rax, 1
+    jne .print_res
+
+    movsd xmm0, [temp]
+    movsd xmm1, [zero]
+    movsd xmm2, [a]
+
+    ucomisd xmm0, xmm1
+    jae .loop
+
+    ucomisd xmm0, xmm2
+    jbe .loop
+
+    inc r12
+    jmp .loop
+
+.print_res:
+    mov rdi, fmt_out
+    mov rsi, r12
+    xor rax, rax
+    call printf
+
+    add rsp, 16
+    pop rbp
+    xor rax, rax
+    ret
