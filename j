@@ -16,50 +16,14 @@ section .text
     global main
 
 main:
+    push rbp
     mov rbp, rsp
+    sub rsp, 16
 
     mov rdi, msg_a
     xor rax, rax
     call printf
 
     mov rdi, fmt_in
-    mov rsi, a
-    xor rax, rax
-    call scanf
-
-    mov rdi, msg_x
-    xor rax, rax
-    call printf
-
-    xor r12, r12
-
-.loop:
-    mov rdi, fmt_in
-    mov rsi, temp
-    xor rax, rax
-    call scanf
-    
-    cmp rax, 1
-    jne .print_res
-
-    movsd xmm0, [temp]
-    movsd xmm1, [zero]
-    movsd xmm2, [a]
-
-    ucomisd xmm0, xmm1
-    jae .loop
-
-    ucomisd xmm0, xmm2
-    jbe .loop
-
-    inc r12
-    jmp .loop
-
-.print_res:
-    mov rdi, fmt_out
-    mov rsi, r12
-    xor rax, rax
-    call printf
-
-    xor rax, rax
-    ret
+    lea rsi, [a]
+    xor rax
