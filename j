@@ -1,4 +1,5 @@
-extern printf, scanf
+
+Extern printf, scanf
 
 section .data
     msg_a     db "Введіть a: ", 0
@@ -15,9 +16,8 @@ section .text
     global main
 
 main:
-    mov rbp, rsp                ; Для коректного дебагу в SASM
+    mov rbp, rsp
 
-    ; 1. Вводимо 'a'
     mov rdi, msg_a
     xor rax, rax
     call printf
@@ -27,40 +27,35 @@ main:
     xor rax, rax
     call scanf
 
-    ; 2. Запит на числа
     mov rdi, msg_x
     xor rax, rax
     call printf
 
-    xor r12, r12                ; r12 — наш лічильник (count)
+    xor r12, r12
 
 .loop:
-    ; 3. Зчитуємо x
     mov rdi, fmt_in
     mov rsi, temp
     xor rax, rax
     call scanf
     
-    cmp rax, 1                  ; Чи вдалося зчитати число?
-    jne .print_res              ; Якщо ні (ввели букву) — кінець циклу
+    cmp rax, 1
+    jne .print_res
 
-    movsd xmm0, [temp]          ; xmm0 = введене число
-    movsd xmm1, [zero]          ; xmm1 = 0.0
-    movsd xmm2, [a]             ; xmm2 = a
+    movsd xmm0, [temp]
+    movsd xmm1, [zero]
+    movsd xmm2, [a]
 
-    ; ПЕРЕВІРКА: чи x < 0?
     ucomisd xmm0, xmm1
-    jae .loop                   ; Якщо x >= 0, ігноруємо
+    jae .loop
 
-    ; ПЕРЕВІРКА: чи x > a?
     ucomisd xmm0, xmm2
-    jbe .loop                   ; Якщо x <= a, ігноруємо
+    jbe .loop
 
-    inc r12                     ; Якщо обидві умови пройшли, count++
+    inc r12
     jmp .loop
 
 .print_res:
-    ; 4. Вивід результату
     mov rdi, fmt_out
     mov rsi, r12
     xor rax, rax
